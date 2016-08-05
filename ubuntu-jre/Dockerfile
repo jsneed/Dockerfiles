@@ -3,7 +3,8 @@
 # OS: Ubuntu 
 # Apps: Java 8
 
-FROM ubuntu:16.04 #Xenial
+# Ubuntu 16.04 = Xenial
+FROM ubuntu:16.04 
 
 ENV JAVA_VERSION=8u65 \
     JAVA_VERSION_PREFIX=1.8.0_65
