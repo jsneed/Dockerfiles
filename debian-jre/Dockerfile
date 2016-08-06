@@ -25,6 +25,7 @@ RUN apt-get update && \
     autoconf \
     mc \
     tar \
+    xz-utils \
     locales \
     ca-certificates \
     curl && \
