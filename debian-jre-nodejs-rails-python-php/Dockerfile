@@ -116,7 +116,7 @@ RUN set -xe \
 		libxml2-dev \
 	" \
 	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/* \
-	&& docker-php-source extract \
+	&& sudo sh /usr/local/bin/docker-php-source extract \
 	&& cd /usr/src/php \
 	&& ./configure \
 		--with-config-file-path="$PHP_INI_DIR" \
@@ -136,7 +136,7 @@ RUN set -xe \
 	&& { find /usr/local/bin /usr/local/sbin -type f -executable -exec strip --strip-all '{}' + || true; } \
 	&& make clean \
 	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $buildDeps \
-	&& docker-php-source delete
+	&& sudo sh /usr/local/bin/docker-php-source delete
 
 COPY docker-php-ext-* /usr/local/bin/
 
