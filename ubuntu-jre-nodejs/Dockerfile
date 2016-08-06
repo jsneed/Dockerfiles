@@ -5,6 +5,9 @@
 # Apps: Node.js, Gulp, Bower, Grunt, Yeoman
 FROM jsneed/ubuntu-jre
 
+# https://hub.docker.com/_/node/
+# https://github.com/nodejs/docker-node/blob/bf93fccf8e127824cd2478f491502c7d3ad0e1aa/4.4/Dockerfile
+
 USER root
 
 # gpg keys listed at https://github.com/nodejs/node

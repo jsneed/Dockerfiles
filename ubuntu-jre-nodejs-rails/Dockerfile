@@ -6,6 +6,9 @@
 # Apps: Ruby, Rails, Sass, Compass
 FROM jsneed/ubuntu-jre-nodejs
 
+# https://hub.docker.com/_/ruby/
+# https://github.com/docker-library/ruby/blob/2d6449f03976ededa14be5cac1e9e070b74e4de4/2.3/Dockerfile
+
 # skip installing gem documentation
 RUN mkdir -p /usr/local/etc \
 	&& { \

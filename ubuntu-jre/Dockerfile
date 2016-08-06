@@ -21,6 +21,7 @@ RUN apt-get update && \
     wget \
     bash \
     unzip \
+    autoconf \
     mc \
     ca-certificates \
     curl \

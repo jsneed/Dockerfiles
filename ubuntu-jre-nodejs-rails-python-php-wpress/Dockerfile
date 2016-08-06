@@ -9,6 +9,9 @@
 # Apps: Wordpress
 FROM jsneed/ubuntu-jre-nodejs-rails-python-php
 
+
+# https://github.com/docker-library/wordpress/blob/6afa0720da89f31d6c61fd38bb0d6de6e9a14a49/apache/Dockerfile
+
 RUN a2enmod rewrite expires
 
 # install the PHP extensions we need
