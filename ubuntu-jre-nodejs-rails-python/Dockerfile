@@ -7,6 +7,9 @@
 # Apps: Python
 FROM jsneed/ubuntu-jre-nodejs-rails
 
+# https://hub.docker.com/_/python/
+# https://github.com/docker-library/python/blob/a819c92949e182901df10e52d41bc57c6ca73bd5/3.5/Dockerfile
+
 # divert many traces of Debian Python (so that they are not used by mistake)
 # https://bugs.debian.org/33263 :(
 RUN set -ex \

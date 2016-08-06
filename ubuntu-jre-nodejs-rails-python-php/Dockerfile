@@ -8,6 +8,9 @@
 # Apps: PHP, Apache
 FROM jsneed/ubuntu-jre-nodejs-rails-python
 
+# https://hub.docker.com/_/php/
+# https://github.com/docker-library/php/blob/d8a4ccf4d620ec866d5b42335b699742df08c5f0/7.0/Dockerfile
+
 # persistent / runtime deps
 ENV PHPIZE_DEPS \
 		autoconf \
