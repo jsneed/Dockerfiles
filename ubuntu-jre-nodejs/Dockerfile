@@ -5,6 +5,8 @@
 # Apps: Node.js, Gulp, Bower, Grunt, Yeoman
 FROM jsneed/ubuntu-jre
 
+USER root
+
 # gpg keys listed at https://github.com/nodejs/node
 RUN set -ex \
   && for key in \
