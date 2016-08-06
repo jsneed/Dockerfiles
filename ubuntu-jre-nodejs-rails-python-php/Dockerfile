@@ -107,7 +107,7 @@ RUN set -xe \
 	&& gpg --batch --verify php.tar.xz.asc php.tar.xz \
 	&& rm -r "$GNUPGHOME"
 
-COPY docker-php-source.sh /usr/local/bin/
+COPY docker-php-source /usr/local/bin/
 
 RUN set -xe \
 	&& buildDeps=" \
@@ -119,7 +119,7 @@ RUN set -xe \
 		libxml2-dev \
 	" \
 	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/* \
-	&& sudo sh /usr/local/bin/docker-php-source.sh extract \
+	&& sudo sh /usr/local/bin/docker-php-source extract \
 	&& cd /usr/src/php \
 	&& ./configure \
 		--with-config-file-path="$PHP_INI_DIR" \
@@ -139,7 +139,7 @@ RUN set -xe \
 	&& { find /usr/local/bin /usr/local/sbin -type f -executable -exec strip --strip-all '{}' + || true; } \
 	&& make clean \
 	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $buildDeps \
-	&& sudo sh /usr/local/bin/docker-php-source.sh delete
+	&& sudo sh /usr/local/bin/docker-php-source delete
 
 COPY docker-php-ext-* /usr/local/bin/
 
