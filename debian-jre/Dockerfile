@@ -6,6 +6,7 @@
 # Debian 8 = Jessie
 FROM debian:jessie
 
+# https://github.com/codenvy/dockerfiles/blob/master/debian_jre/Dockerfile
 ENV JAVA_VERSION=8u65 \
     JAVA_VERSION_PREFIX=1.8.0_65
 
@@ -23,17 +24,17 @@ RUN apt-get update && \
     unzip \
     autoconf \
     mc \
+    locales \
     ca-certificates \
-    curl \
-    software-properties-common \
-    python-software-properties && \
+    curl && \
     mkdir /var/run/sshd && \
     sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd && \
     echo "%sudo ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
-    useradd -u 1000 -G users,sudo -d /home/user --shell /bin/bash -m user && \
-    echo "secret\nsecret" | passwd user && \
-    add-apt-repository ppa:git-core/ppa && \
-    apt-get update && \
+    useradd -u 1000 -G users,sudo -d /home/user --shell /bin/bash -m user
+RUN PASS=$(openssl rand -base64 32) && \
+    echo "$PASS\n$PASS" | passwd user && \
+    sudo echo -e "deb http://ppa.launchpad.net/git-core/ppa/ubuntu precise main\ndeb-src http://ppa.launchpad.net/git-core/ppa/ubuntu precise main" >> /etc/apt/sources.list.d/sources.list && \
+    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A1715D88E1DF1F24 && \
     sudo apt-get install git subversion -y && \
     apt-get clean && \
     wget \
@@ -48,6 +49,7 @@ RUN apt-get update && \
     echo "#! /bin/bash\n set -e\n sudo /usr/sbin/sshd -D &\n exec \"\$@\"" > /home/user/entrypoint.sh && chmod a+x /home/user/entrypoint.sh
 ENV LANG C.UTF-8
 RUN echo "export JAVA_HOME=/opt/jre$JAVA_VERSION_PREFIX\nexport PATH=$JAVA_HOME/bin:$M2_HOME/bin:$PATH" >> /home/user/.bashrc
+
 USER user
 EXPOSE 22 4403
 WORKDIR /projects
