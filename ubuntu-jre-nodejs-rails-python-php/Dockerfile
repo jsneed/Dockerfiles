@@ -11,6 +11,8 @@ FROM jsneed/ubuntu-jre-nodejs-rails-python
 # https://hub.docker.com/_/php/
 # https://github.com/docker-library/php/blob/d8a4ccf4d620ec866d5b42335b699742df08c5f0/7.0/apache/Dockerfile
 
+USER root
+
 # persistent / runtime deps
 ENV PHPIZE_DEPS \
 		autoconf \
@@ -117,7 +119,7 @@ RUN set -xe \
 		libxml2-dev \
 	" \
 	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/* \
-	&& sudo docker-php-source extract \
+	&& docker-php-source extract \
 	&& cd /usr/src/php \
 	&& ./configure \
 		--with-config-file-path="$PHP_INI_DIR" \
