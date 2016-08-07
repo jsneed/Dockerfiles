@@ -9,6 +9,7 @@ FROM jsneed/ubuntu-jre-nodejs
 # Add C Compiler Dependencies
 # https://hub.docker.com/_/buildpack-deps/
 # https://github.com/docker-library/buildpack-deps/blob/e7534be05255522954f50542ebf9c5f06485838d/jessie/Dockerfile
+USER root
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		autoconf \
 		automake \
@@ -47,6 +48,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		zlib1g-dev \
 	&& rm -rf /var/lib/apt/lists/*
 
+USER user
+
 # https://hub.docker.com/_/ruby/
 # https://github.com/docker-library/ruby/blob/2d6449f03976ededa14be5cac1e9e070b74e4de4/2.3/Dockerfile
 
@@ -61,6 +64,8 @@ ENV RUBY_MAJOR 2.3
 ENV RUBY_VERSION 2.3.1
 ENV RUBY_DOWNLOAD_SHA256 b87c738cb2032bf4920fef8e3864dc5cf8eae9d89d8d523ce0236945c5797dcd
 ENV RUBYGEMS_VERSION 2.6.6
+
+USER root
 
 # some of ruby's build scripts are written in ruby
 # we purge this later to make sure our final image uses what we just built
@@ -88,8 +93,11 @@ RUN set -ex \
 	&& gem update --system $RUBYGEMS_VERSION \
 	&& rm -r /usr/src/ruby
 
-ENV BUNDLER_VERSION 1.12.5
+USER user
 
+RUN sudo chown -R user:sudo /usr/local/lib/ruby/gems
+
+ENV BUNDLER_VERSION 1.12.5
 RUN gem install bundler --version "$BUNDLER_VERSION"
 
 # install things globally, for great justice
@@ -104,7 +112,9 @@ RUN mkdir -p "$GEM_HOME" "$BUNDLE_BIN" \
 	&& chmod 777 "$GEM_HOME" "$BUNDLE_BIN"
 
 # see http://guides.rubyonrails.org/command_line.html#rails-dbconsole
+USER root
 RUN apt-get update && apt-get install -y mysql-client postgresql-client sqlite3 --no-install-recommends && rm -rf /var/lib/apt/lists/*
+USER user
 
 ENV RAILS_VERSION 5.0.0
 
@@ -112,4 +122,12 @@ RUN gem install rails --version "$RAILS_VERSION"
 
 RUN gem install sass compass 
 
+RUN sudo gem install nokogiri
+
+RUN gem install curb -v 0.8.6
+
 CMD [ "irb" ]
+
+USER user
+WORKDIR /projects
+CMD tail -f /dev/null
