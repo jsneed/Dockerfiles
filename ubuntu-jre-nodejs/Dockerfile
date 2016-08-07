@@ -8,7 +8,7 @@ FROM jsneed/ubuntu-jre
 # https://hub.docker.com/_/node/
 # https://github.com/nodejs/docker-node/blob/bf93fccf8e127824cd2478f491502c7d3ad0e1aa/4.4/Dockerfile
 
-USER root
+USER user
 
 # gpg keys listed at https://github.com/nodejs/node
 RUN set -ex \
@@ -28,7 +28,9 @@ RUN set -ex \
 ENV NPM_CONFIG_LOGLEVEL info
 ENV NODE_VERSION 4.4.7
 
-RUN sudo curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.xz" \
+RUN sudo chown -R user:sudo /usr/local \
+  && sudo chown user /projects \
+  && curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.xz" \
   && curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt.asc" \
   && gpg --batch --decrypt --output SHASUMS256.txt SHASUMS256.txt.asc \
   && grep " node-v$NODE_VERSION-linux-x64.tar.xz\$" SHASUMS256.txt | sha256sum -c - \
@@ -40,3 +42,7 @@ RUN sudo npm install -g npm@latest
 RUN sudo npm install --unsafe-perm -g gulp bower grunt grunt-cli yeoman-generator yo generator-angular generator-karma generator-webapp
 
 CMD [ "node" ]
+
+USER user
+WORKDIR /projects
+CMD tail -f /dev/null
