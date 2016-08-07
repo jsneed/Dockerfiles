@@ -27,7 +27,8 @@ if [ "$pm" = 'apk' ]; then
 	fi
 fi
 
-docker-php-source extract
+cd /usr/local/bin
+sudo sh docker-php-source extract
 
 set -x
 cd "/usr/src/php/ext/$ext"

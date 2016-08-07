@@ -9,15 +9,22 @@
 # Apps: Wordpress
 FROM jsneed/debian-jre-nodejs-rails-python-php
 
+USER root
+
 # https://hub.docker.com/_/wordpress/
 # https://github.com/docker-library/wordpress/blob/6afa0720da89f31d6c61fd38bb0d6de6e9a14a49/apache/Dockerfile
 
-RUN a2enmod rewrite expires
+RUN a2enmod rewrite expires 
 
 # install the PHP extensions we need
-RUN apt-get update && apt-get install -y libpng12-dev libjpeg-dev && rm -rf /var/lib/apt/lists/* \
-	&& docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
-	&& docker-php-ext-install gd mysqli opcache
+RUN apt-get update \
+	&& apt-get install -y libpng12-dev libjpeg-dev \
+	&& rm -rf /var/lib/apt/lists/* \
+	&& cd /usr/local/bin \
+	&& chmod ug+rwx docker-php-ext-* \
+	&& sudo sh docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
+	&& sudo sh docker-php-ext-install gd mysqli opcache \
+	&& cd /var/www/html
 
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
@@ -30,7 +37,7 @@ RUN { \
 		echo 'opcache.enable_cli=1'; \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
-VOLUME /var/www/html
+#VOLUME /var/www/html
 
 ENV WORDPRESS_VERSION 4.5.3
 ENV WORDPRESS_SHA1 835b68748dae5a9d31c059313cd0150f03a49269
