@@ -9,11 +9,10 @@
 # Apps: Wordpress
 FROM jsneed/ubuntu-jre-nodejs-rails-python-php
 
-USER root
-
 # https://hub.docker.com/_/wordpress/
 # https://github.com/docker-library/wordpress/blob/6afa0720da89f31d6c61fd38bb0d6de6e9a14a49/apache/Dockerfile
 
+USER root
 RUN a2enmod rewrite expires
 
 # install the PHP extensions we need
@@ -48,10 +47,14 @@ RUN curl -o wordpress.tar.gz -SL https://wordpress.org/wordpress-${WORDPRESS_VER
 	&& tar -xzf wordpress.tar.gz -C /usr/src/ \
 	&& rm wordpress.tar.gz \
 	&& chown -R www-data:www-data /usr/src/wordpress
+USER user
 
 COPY docker-entrypoint.sh /entrypoint.sh
 
 # grr, ENTRYPOINT resets CMD now
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["apache2-foreground"]
+
+USER user
 WORKDIR /projects
+CMD tail -f /dev/null
