@@ -12,6 +12,7 @@ FROM jsneed/ubuntu-jre-nodejs-rails
 
 # divert many traces of Debian Python (so that they are not used by mistake)
 # https://bugs.debian.org/33263 :(
+USER root
 RUN set -ex \
 	&& for bits in \
 #		/etc/python* \
@@ -24,6 +25,7 @@ RUN set -ex \
 	; do \
 		dpkg-divert --rename "$bits"; \
 	done
+USER user 
 
 # http://bugs.python.org/issue19846
 # > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
@@ -37,6 +39,7 @@ ENV PYTHON_VERSION 3.5.2
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 ENV PYTHON_PIP_VERSION 8.1.2
 
+USER root
 RUN set -ex \
 	&& buildDeps=' \
 		tcl-dev \
@@ -74,6 +77,7 @@ RUN set -ex \
 		\) -exec rm -rf '{}' + \
 	&& apt-get purge -y --auto-remove $buildDeps \
 	&& rm -rf /usr/src/python ~/.cache
+USER user
 
 # make some useful symlinks that are expected to exist
 RUN cd /usr/local/bin \
@@ -84,3 +88,7 @@ RUN cd /usr/local/bin \
 	&& ln -s python3-config python-config
 
 CMD ["python3"]
+
+USER user
+WORKDIR /projects
+CMD tail -f /dev/null
